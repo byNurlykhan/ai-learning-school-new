@@ -280,7 +280,7 @@ td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:top}
 .log{max-height:240px;overflow:auto;background:var(--field);border-radius:16px;padding:8px 14px;font-size:12.5px;margin-top:12px}
 .log div{padding:5px 0;border-top:1px solid #E3E5EE}
 .log div:first-child{border-top:0}
-#cs{position:fixed;left:-6000px;top:0}
+#cs{position:absolute;left:-10000px;top:0;width:297mm}
 
 #cs{
   --brand:#004D3D;        
@@ -335,7 +335,8 @@ td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:top}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -1647,19 +1648,39 @@ if(VIEW === "admin"){
     sheet.querySelector("#qr").src = qrDataUrl(SITE + "?v=check&id=" + encodeURIComponent(id), 8);
 
     const stage = $$$("cs");
-    stage.innerHTML = ""; stage.appendChild(sheet);
-    if(document.fonts && document.fonts.ready) await document.fonts.ready;
-    await new Promise(r => setTimeout(r, 120));
-
-    const opt = { margin:0, filename:"Сертификат " + id + ".pdf",
-      image:{ type:"jpeg", quality:0.97 },
-      html2canvas:{ scale:2, useCORS:true, backgroundColor:"#ffffff", logging:false },
-      jsPDF:{ unit:"mm", format:"a4", orientation:"landscape" } };
-    const w = html2pdf().set(opt).from(sheet);
-    if(download){ await w.save(); stage.innerHTML = ""; return null; }
-    const blob = await w.output("blob");
     stage.innerHTML = "";
-    return blob;
+    stage.appendChild(sheet);
+
+    // қаріптер мен суреттер толық жүктелгенше күтеміз
+    if(document.fonts && document.fonts.ready) await document.fonts.ready;
+    await Promise.all(Array.from(sheet.querySelectorAll("img")).map(im =>
+      im.complete ? Promise.resolve()
+                  : new Promise(r => { im.onload = r; im.onerror = r; })));
+    await new Promise(r => setTimeout(r, 200));
+
+    // бетті суретке айналдырамыз
+    const canvas = await html2canvas(sheet, {
+      scale: 2,
+      backgroundColor: "#ffffff",
+      useCORS: true,
+      logging: false,
+      width:  sheet.offsetWidth,
+      height: sheet.offsetHeight,
+      windowWidth:  sheet.offsetWidth,
+      windowHeight: sheet.offsetHeight,
+      scrollX: 0, scrollY: 0
+    });
+    stage.innerHTML = "";
+
+    if(!canvas.width || !canvas.height) throw new Error("Сертификат суретке айналмады");
+
+    // бір ғана A4 көлденең бетке саламыз
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit:"mm", format:"a4", orientation:"landscape", compress:true });
+    pdf.addImage(canvas.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, 297, 210);
+
+    if(download){ pdf.save("Сертификат " + id + ".pdf"); return null; }
+    return pdf.output("blob");
   }
   function toB64(blob){
     return new Promise((res, rej)=>{
