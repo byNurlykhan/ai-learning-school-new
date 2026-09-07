@@ -783,6 +783,26 @@ padding:4px 9px;border-radius:999px;flex:none}
   <div class="mid">
     <p class="top" style="text-align:center;font-size:12.5px;color:var(--muted);margin-bottom:16px">
       Жасанды интеллект дәуіріндегі кітапхана · 1–2 қазан</p>
+    <div class="card" id="onlineIntro" style="display:none">
+      <span class="pill" style="background:var(--lime);color:#28320A">ОНЛАЙН ҚАТЫСУ</span>
+      <h1 class="big-t" style="margin-top:14px">Эфирде қатысуыңызды белгілеу</h1>
+      <p class="sub">Семинар YouTube арқылы тікелей эфирде көрсетіледі. Қатысуыңыз автоматты
+      түрде белгіленбейді, оны өзіңіз растайсыз.</p>
+
+      <ol class="steps" style="margin-top:18px">
+        <li>Эфирді ашып, семинарды көріп отырыңыз.</li>
+        <li>Күн ішінде экранда төрт таңбалы код шығады, жүргізуші оны дауыстап та айтады.</li>
+        <li>Сол кодты төменге жазып, тізімнен өзіңізді таңдайсыз.</li>
+        <li>Мұны <b>екі күні де</b> қайталау керек. Сертификат сонда ғана беріледі.</li>
+      </ol>
+
+      <a class="btn" id="ytBtn" style="display:none;text-align:center;text-decoration:none;margin-top:16px" target="_blank" rel="noopener">Эфирді ашу</a>
+
+      <p class="sub" style="margin-top:16px;font-size:13px">Трансляция идёт на YouTube. Во время
+      эфира на экране появится четырёхзначный код: введите его ниже и выберите себя из списка.
+      Это нужно сделать оба дня.</p>
+    </div>
+
     <div class="card" id="inCode" style="display:none">
       <h1 class="big-t">Онлайн қатысу</h1>
       <p class="sub" style="margin-bottom:18px">Эфир кезінде экранда шыққан төрт таңбалы кодты жазыңыз.</p>
@@ -1111,6 +1131,7 @@ const CONFIG = {
   endISO:   "2026-10-02T13:00:00+05:00",
   certPrefix: "KZ-AI-2026",
   contactEmail: "metod_nlrk@mail.ru",
+  youtube: "",                               // YouTube эфирінің сілтемесі, болса қоясың
   contactPhone: "+7 (700) 000-00-00"
 };
 
@@ -1644,7 +1665,7 @@ function qrDataUrl(text, cell){
 
 /* ---------- бетті таңдау ---------- */
 (function router(){
-  const map = { reg:"v-reg", in:"v-in", check:"v-check", screen:"v-screen", admin:"v-admin" };
+  const map = { reg:"v-reg", in:"v-in", online:"v-in", check:"v-check", screen:"v-screen", admin:"v-admin" };
   const id = map[VIEW] || "v-reg";
   document.querySelectorAll(".view").forEach(v => v.classList.remove("on"));
   document.getElementById(id).classList.add("on");
@@ -1652,7 +1673,7 @@ function qrDataUrl(text, cell){
 })();
 
 /* ══════════ ҚАТЫСУДЫ БЕЛГІЛЕУ ══════════ */
-if(VIEW === "in"){
+if(VIEW === "in" || VIEW === "online"){
   let S = Q.get("s") || "";          // QR-дан келсе кілт бар, онлайн болса код сұраймыз
   const box = document.getElementById("inList");
   const inp = document.getElementById("inWho");
@@ -1673,6 +1694,14 @@ if(VIEW === "in"){
       document.getElementById("inKnown").style.display = "none";
       document.getElementById("inFind").style.display = "block";
       inp.focus();
+    }
+  }
+
+  if(VIEW === "online" && !S){
+    document.getElementById("onlineIntro").style.display = "block";
+    if(CONFIG.youtube){
+      const y = document.getElementById("ytBtn");
+      y.href = CONFIG.youtube; y.style.display = "block";
     }
   }
 
@@ -1832,7 +1861,7 @@ if(VIEW === "screen"){
       document.getElementById("scrCount").textContent = d.count;
       if(d.code){
         document.getElementById("scrOnline").style.display = "flex";
-        document.getElementById("scrSite").textContent = location.host + "/?v=in";
+        document.getElementById("scrSite").textContent = location.host + "/?v=online";
         document.getElementById("scrCode").textContent = d.code;
       }
       if(d.ts && d.ts !== lastTs){
