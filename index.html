@@ -351,7 +351,7 @@ padding:4px 9px;border-radius:999px;flex:none}
 </head>
 <body>
 
-<div class="view on" id="v-reg">
+<div class="view" id="v-reg">
 <div class="topbar">
   <div class="topbar-in">
     <span class="host" data-i="host"></span>
@@ -1411,6 +1411,7 @@ function qrDataUrl(text, cell){
 (function router(){
   const map = { reg:"v-reg", in:"v-in", check:"v-check", screen:"v-screen", admin:"v-admin" };
   const id = map[VIEW] || "v-reg";
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("on"));
   document.getElementById(id).classList.add("on");
   if(VIEW === "screen") document.body.style.background = "#0E0E14";
 })();
@@ -1625,16 +1626,13 @@ if(VIEW === "admin"){
     try{
       d = await api({ action:"login", user:"__probe__", pass:"__probe__" });
     }catch(err){
-      diag("Сервермен байланыс жоқ. Apps Script сілтемесі дұрыс емес немесе деплойда "
-         + "«Who has access» дегенде «Anyone» таңдалмаған.", "bad");
+      diag("Сервермен байланыс жоқ", "bad");
       return;
     }
     if(d.error === "bad_login"){
-      diag("Сервер дайын, жаңа код тұр. Енді логин мен құпия сөзді енгіз. "
-         + "Олар apps-script.gs ішіндегі adminUser және adminPass жолдарында жазылған.", "good");
+      diag("Сервер дайын", "good");
     }else if(d.error === "unknown_action" || d.error === "no_email" || d.ok === true){
-      diag("Байланыс бар, бірақ серверде ЕСКІ код тұр. Apps Script-те кодты жаңасына ауыстыр, "
-         + "содан кейін Deploy → Manage deployments → қарындаш → Version: New version → Deploy.", "bad");
+      diag("Серверде ескі код тұр. Apps Script-те жаңа версия шығару керек.", "bad");
     }else{
       diag("Сервер күтпеген жауап берді: " + JSON.stringify(d), "bad");
     }
