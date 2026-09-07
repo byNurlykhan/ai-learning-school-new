@@ -444,6 +444,16 @@ padding:4px 9px;border-radius:999px;flex:none}
   100%{opacity:0;transform:translateY(-34px) scale(1.1)}
 }
 
+#cs .cols{display:flex;gap:12mm;align-items:flex-start}
+#cs .col-l{flex:1;min-width:0}
+#cs .col-r{width:66mm;flex:none;border-left:.6pt solid var(--line);padding-left:9mm;padding-top:2mm}
+#cs .text{max-width:none}
+#cs .mlab{font-size:7.5pt;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:2mm}
+#cs .mfmt{font-size:11.5pt;font-weight:700;color:var(--brand);line-height:1.35}
+#cs .mlist{list-style:none;padding:0;margin:0}
+#cs .mlist li{position:relative;padding-left:5.5mm;font-size:9.5pt;line-height:1.5;color:#2A2C38;margin-bottom:1.6mm}
+#cs .mlist li::before{content:"";position:absolute;left:0;top:1.7mm;width:2.6mm;height:2.6mm;border-radius:.7mm;background:var(--lime)}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
@@ -834,6 +844,18 @@ padding:4px 9px;border-radius:999px;flex:none}
   </div>
 </div>
 
+
+<!-- ══════════ ЖЕКЕ СІЛТЕМЕ АРҚЫЛЫ БЕЛГІЛЕНУ ══════════ -->
+<div class="view" id="v-me">
+  <div class="mid">
+    <div class="card" id="meCard" style="text-align:center">
+      <div id="meBody">
+        <p class="sub" style="margin:0">Тексерілуде…</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════ СЕРТИФИКАТТЫ ТЕКСЕРУ ══════════ -->
 <div class="view" id="v-check">
   <div class="mid">
@@ -896,9 +918,9 @@ padding:4px 9px;border-radius:999px;flex:none}
     <div class="qrbig"><img id="scrQr" alt="QR"></div>
     <p class="cnt">Бүгін белгіленгені: <b id="scrCount">0</b></p>
     <div class="onl" id="scrOnline" style="display:none">
-      <span>Онлайн қатысушыларға</span>
-      <b id="scrSite"></b>
-      <em id="scrCode"></em>
+      <span>Онлайн қараушыларға</span>
+      <b>Поштаңыздағы «Қатысуымды белгілеу» түймесін басыңыз</b>
+      <em id="scrCode" style="font-size:clamp(13px,1.4vw,19px);letter-spacing:.04em;color:#8E90A6;font-weight:500"></em>
     </div>
   </div>
   <div class="hello" id="hello">
@@ -1085,15 +1107,32 @@ padding:4px 9px;border-radius:999px;flex:none}
     </div>
 
     <div class="mid">
-      <div class="word">Сертификат</div>
-      <div class="name" id="name">Нұрлыхан Жұмахан</div>
-      <div class="rule"></div>
-      <p class="text">
-        Қазақстан Республикасының Ұлттық кітапханасы ұйымдастырған
-        <b>«Жасанды интеллект дәуіріндегі кітапхана: цифрлық трансформация және жаңа мүмкіндіктер»</b>
-        атты екі күндік семинар-тренингке <span id="fmtword"></span>қатысып, кітапхана саласындағы жасанды интеллект (AI) мен
-        цифрлық инновацияларды дамыту бағытындағы кәсіби біліктілігін арттырғаны үшін беріледі.
-      </p>
+      <div class="cols">
+        <div class="col-l">
+          <div class="word">Сертификат</div>
+          <div class="name" id="name">Нұрлыхан Жұмахан</div>
+          <div class="rule"></div>
+          <p class="text">
+            Қазақстан Республикасының Ұлттық кітапханасы ұйымдастырған
+            <b>«Жасанды интеллект дәуіріндегі кітапхана: цифрлық трансформация және жаңа мүмкіндіктер»</b>
+            атты екі күндік семинар-тренингке <span id="fmtword"></span>қатысып, кітапхана саласындағы
+            жасанды интеллект (AI) мен цифрлық инновацияларды дамыту бағытындағы кәсіби біліктілігін
+            арттырғаны үшін беріледі.
+          </p>
+        </div>
+
+        <div class="col-r">
+          <div class="mlab">Оқыту форматы</div>
+          <div class="mfmt" id="mfmt">Тікелей қатысу</div>
+          <div class="mlab" style="margin-top:6mm">Өтілген модульдер</div>
+          <ul class="mlist" id="mlist">
+            <li>Практикалық кейстер</li>
+            <li>B2B нетворкинг</li>
+            <li>Интерактивті шеберхана</li>
+            <li>Жаңа кәсіби дағдыларды игеру</li>
+          </ul>
+        </div>
+      </div>
     </div>
 
     <div class="foot">
@@ -1168,8 +1207,8 @@ kk:{
 
   certH:"Сертификат туралы",
   certP:"Сертификат тек шын мәнінде қатысқандарға беріледі. Тіркелу деген әлі қатысу емес.",
-  certL1:"Қатысу екі күні де бөлек белгіленеді: залда QR арқылы, онлайн эфирдегі код арқылы",
-  certL2:"Онлайн қатысқандардың сертификатында «онлайн форматта» деп көрсетіледі",
+  certL1:"Залда қатысатындардың қатысуы екі күні де белгіленеді: QR арқылы немесе поштадағы түймемен",
+  certL2:"Сертификатта оқыту форматы мен өтілген модульдер бөлек көрсетіледі",
   certL3:"Жіберу 2 қазан сағат 14:00-де басталып, 5 жұмыс күні ішінде кезекпен жүреді",
 
   formH:"Тіркелу парағы",
@@ -1257,8 +1296,8 @@ ru:{
 
   certH:"О сертификате",
   certP:"Сертификат получают только те, кто действительно участвовал. Регистрация — это ещё не участие.",
-  certL1:"Участие отмечается оба дня отдельно: в зале по QR, онлайн по коду из эфира",
-  certL2:"В сертификате онлайн-участников указывается «онлайн форматта»",
+  certL1:"У очных участников участие отмечается оба дня: по QR или кнопкой из письма",
+  certL2:"В сертификате указываются формат обучения и пройденные модули",
   certL3:"Рассылка начнётся 2 октября в 14:00 и продлится до 5 рабочих дней",
 
   formH:"Регистрация",
@@ -1665,7 +1704,7 @@ function qrDataUrl(text, cell){
 
 /* ---------- бетті таңдау ---------- */
 (function router(){
-  const map = { reg:"v-reg", in:"v-in", online:"v-in", check:"v-check", screen:"v-screen", admin:"v-admin" };
+  const map = { reg:"v-reg", in:"v-in", online:"v-in", me:"v-me", check:"v-check", screen:"v-screen", admin:"v-admin" };
   const id = map[VIEW] || "v-reg";
   document.querySelectorAll(".view").forEach(v => v.classList.remove("on"));
   document.getElementById(id).classList.add("on");
@@ -1793,6 +1832,45 @@ if(VIEW === "in" || VIEW === "online"){
   }
 }
 
+
+/* ══════════ ЖЕКЕ СІЛТЕМЕ: БІР РЕТ БАСУ ══════════ */
+if(VIEW === "me"){
+  const id = Q.get("id") || "";
+  const body = document.getElementById("meBody");
+
+  const art = '<svg width="92" height="92" viewBox="0 0 24 24" fill="none" style="margin:0 auto 14px;display:block">'
+    + '<circle cx="12" cy="12" r="11" fill="#DFF56B"/>'
+    + '<path d="M7 12.4l3.2 3.2L17 8.8" stroke="#2F2AA8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  (async ()=>{
+    if(!id){ body.innerHTML = '<p class="sub">Сілтеме толық емес. Хаттағы түймені басыңыз.</p>'; return; }
+    try{
+      const d = await api({ action:"selfmark", id });
+      if(d.ok){
+        body.innerHTML = art
+          + '<h1 class="big-t" style="font-size:26px">' + (d.repeat ? "Сіз бұрын белгіленгенсіз" : "Қатысуыңыз белгіленді") + '</h1>'
+          + '<p class="sub" style="margin-bottom:0">' + esc2(d.name) + '<br>'
+          + d.day + '-күн · ' + esc2(d.fmt || "") + '</p>'
+          + '<p class="sub" style="margin-top:18px;font-size:13px">'
+          + (d.day === "1"
+              ? "Ертең, 2 қазанда, осы түймені тағы бір рет басуды ұмытпаңыз. Сертификат екі күнге де берілген белгі бойынша жасалады."
+              : "Екі күн де белгіленсе, сертификат жақын күндері поштаңызға келеді.")
+          + '</p>';
+      }else if(d.error === "closed"){
+        body.innerHTML = '<h1 class="big-t" style="font-size:24px">Әзірге ерте</h1>'
+          + '<p class="sub">Белгілеу семинар жүріп жатқанда ғана ашылады. '
+          + 'Эфир басталғанда осы сілтемені қайта ашыңыз.</p>'
+          + '<button class="btn" style="margin-top:14px" onclick="location.reload()">Қайта тексеру</button>';
+      }else{
+        body.innerHTML = '<h1 class="big-t" style="font-size:24px">Табылмады</h1>'
+          + '<p class="sub">Бұл нөмір тізімде жоқ. Ұйымдастырушыға хабарласыңыз.</p>';
+      }
+    }catch(err){
+      body.innerHTML = '<p class="sub">Байланыс жоқ. Интернетті тексеріп, бетті жаңартыңыз.</p>';
+    }
+  })();
+}
+
 /* ══════════ СЕРТИФИКАТТЫ ТЕКСЕРУ ══════════ */
 if(VIEW === "check"){
   const inp = document.getElementById("ckId");
@@ -1859,11 +1937,9 @@ if(VIEW === "screen"){
         return;
       }
       document.getElementById("scrCount").textContent = d.count;
-      if(d.code){
-        document.getElementById("scrOnline").style.display = "flex";
-        document.getElementById("scrSite").textContent = location.host + "/?v=online";
-        document.getElementById("scrCode").textContent = d.code;
-      }
+      document.getElementById("scrOnline").style.display = "flex";
+      document.getElementById("scrCode").textContent =
+        d.code ? ("Хатын таппағандарға: " + location.host + "/?v=online · код " + d.code) : "";
       if(d.ts && d.ts !== lastTs){
         if(!first){
           document.getElementById("helloName").textContent = d.name;
@@ -2042,8 +2118,19 @@ if(VIEW === "admin"){
     const sheet = certSheet().cloneNode(true);
     sheet.querySelector("#name").textContent = name;
     sheet.querySelector("#cid").textContent = id;
+    const online = (fmt === "Онлайн");
+
     const fw = sheet.querySelector("#fmtword");
-    if(fw) fw.textContent = (fmt === "Онлайн") ? "онлайн форматта " : "";
+    if(fw) fw.textContent = "";
+
+    sheet.querySelector("#mfmt").textContent =
+      online ? "Дистанциялық онлайн-қатысу" : "Тікелей қатысу";
+
+    const mods = online
+      ? ["Теориялық модуль (көру және тыңдау)"]
+      : ["Практикалық кейстер", "B2B нетворкинг", "Интерактивті шеберхана",
+         "Жаңа кәсіби дағдыларды игеру"];
+    sheet.querySelector("#mlist").innerHTML = mods.map(m => "<li>" + m + "</li>").join("");
     sheet.querySelector("#qr").src = qrDataUrl(SITE + "?v=check&id=" + encodeURIComponent(id), 8);
 
     const stage = $$$("cs");
