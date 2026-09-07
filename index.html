@@ -365,6 +365,11 @@ padding:4px 9px;border-radius:999px;flex:none}
 
 /* ===== автордың қолтаңбасы ===== */
 .crafted{margin-top:18px;font-size:10.5px;letter-spacing:.16em;color:var(--muted);opacity:.6}
+.onl{margin-top:3.2vh;display:flex;flex-direction:column;align-items:center;gap:.7vh;
+  border:1.5px solid rgba(255,255,255,.16);border-radius:20px;padding:1.6vh 2.4vw;background:rgba(255,255,255,.04)}
+.onl span{font-size:clamp(11px,1.1vw,15px);color:#8E90A6;letter-spacing:.04em}
+.onl b{font-size:clamp(13px,1.5vw,21px);color:#fff;font-weight:600}
+.onl em{font-style:normal;font-size:clamp(24px,3.4vw,48px);font-weight:800;color:var(--lime);letter-spacing:.16em;line-height:1.1}
 .scr-crafted{position:fixed;bottom:16px;left:0;right:0;text-align:center;
   font-size:11px;letter-spacing:.18em;color:rgba(255,255,255,.28);z-index:2}
 
@@ -778,6 +783,17 @@ padding:4px 9px;border-radius:999px;flex:none}
   <div class="mid">
     <p class="top" style="text-align:center;font-size:12.5px;color:var(--muted);margin-bottom:16px">
       Жасанды интеллект дәуіріндегі кітапхана · 1–2 қазан</p>
+    <div class="card" id="inCode" style="display:none">
+      <h1 class="big-t">Онлайн қатысу</h1>
+      <p class="sub" style="margin-bottom:18px">Эфир кезінде экранда шыққан төрт таңбалы кодты жазыңыз.</p>
+      <div class="field">
+        <input id="inCodeVal" placeholder="Мысалы: 7K4J" autocomplete="off" autocapitalize="characters"
+               style="text-align:center;font-size:26px;font-weight:700;letter-spacing:.28em;padding:18px">
+      </div>
+      <button class="btn" id="inCodeGo">Жалғастыру</button>
+      <div class="msg" id="inCodeMsg"></div>
+    </div>
+
     <div class="card" id="inKnown" style="display:none">
       <p class="sub" style="margin:0 0 6px">Сәлеметсіз бе,</p>
       <h1 class="big-t" style="font-size:27px;margin-bottom:20px" id="knownName"></h1>
@@ -859,6 +875,11 @@ padding:4px 9px;border-radius:999px;flex:none}
     <p class="lead">Телефонмен сканерлеп, тіркеу нөміріңізді немесе поштаңызды жазыңыз</p>
     <div class="qrbig"><img id="scrQr" alt="QR"></div>
     <p class="cnt">Бүгін белгіленгені: <b id="scrCount">0</b></p>
+    <div class="onl" id="scrOnline" style="display:none">
+      <span>Онлайн қатысушыларға</span>
+      <b id="scrSite"></b>
+      <em id="scrCode"></em>
+    </div>
   </div>
   <div class="hello" id="hello">
     <div class="badge" id="helloDay"></div>
@@ -1050,7 +1071,7 @@ padding:4px 9px;border-radius:999px;flex:none}
       <p class="text">
         Қазақстан Республикасының Ұлттық кітапханасы ұйымдастырған
         <b>«Жасанды интеллект дәуіріндегі кітапхана: цифрлық трансформация және жаңа мүмкіндіктер»</b>
-        атты екі күндік семинар-тренингке қатысып, кітапхана саласындағы жасанды интеллект (AI) мен
+        атты екі күндік семинар-тренингке <span id="fmtword"></span>қатысып, кітапхана саласындағы жасанды интеллект (AI) мен
         цифрлық инновацияларды дамыту бағытындағы кәсіби біліктілігін арттырғаны үшін беріледі.
       </p>
     </div>
@@ -1126,9 +1147,9 @@ kk:{
 
   certH:"Сертификат туралы",
   certP:"Сертификат тек шын мәнінде қатысқандарға беріледі. Тіркелу деген әлі қатысу емес.",
-  certL1:"Қатысу әр күні белгіленеді: залда QR-код арқылы, онлайн эфирде экрандағы код арқылы",
-  certL2:"Әр сертификаттың қайталанбайтын шифрлы нөмірі болады",
-  certL3:"2 қазан сағат 14:00-де PDF нұсқасы поштаңа жіберіледі",
+  certL1:"Қатысу екі күні де бөлек белгіленеді: залда QR арқылы, онлайн эфирдегі код арқылы",
+  certL2:"Онлайн қатысқандардың сертификатында «онлайн форматта» деп көрсетіледі",
+  certL3:"Жіберу 2 қазан сағат 14:00-де басталып, 5 жұмыс күні ішінде кезекпен жүреді",
 
   formH:"Тіркелу парағы",
   formReq:"* міндетті",
@@ -1215,9 +1236,9 @@ ru:{
 
   certH:"О сертификате",
   certP:"Сертификат получают только те, кто действительно участвовал. Регистрация — это ещё не участие.",
-  certL1:"Посещение отмечается каждый день: в зале по QR-коду, онлайн по коду с экрана",
-  certL2:"У каждого сертификата свой неповторимый шифрованный номер",
-  certL3:"2 октября в 14:00 PDF придёт на вашу почту",
+  certL1:"Участие отмечается оба дня отдельно: в зале по QR, онлайн по коду из эфира",
+  certL2:"В сертификате онлайн-участников указывается «онлайн форматта»",
+  certL3:"Рассылка начнётся 2 октября в 14:00 и продлится до 5 рабочих дней",
 
   formH:"Регистрация",
   formReq:"* обязательно",
@@ -1632,7 +1653,7 @@ function qrDataUrl(text, cell){
 
 /* ══════════ ҚАТЫСУДЫ БЕЛГІЛЕУ ══════════ */
 if(VIEW === "in"){
-  const S = Q.get("s");
+  let S = Q.get("s") || "";          // QR-дан келсе кілт бар, онлайн болса код сұраймыз
   const box = document.getElementById("inList");
   const inp = document.getElementById("inWho");
   let me = null;
@@ -1642,10 +1663,38 @@ if(VIEW === "in"){
     if(raw) me = JSON.parse(raw);
   }catch(e){}
 
-  if(me && me.id){
-    document.getElementById("inKnown").style.display = "block";
+  function openStep(){
+    document.getElementById("inCode").style.display = "none";
+    if(me && me.id){
+      document.getElementById("inKnown").style.display = "block";
+      document.getElementById("inFind").style.display = "none";
+      document.getElementById("knownName").textContent = me.name;
+    }else{
+      document.getElementById("inKnown").style.display = "none";
+      document.getElementById("inFind").style.display = "block";
+      inp.focus();
+    }
+  }
+
+  if(S){
+    openStep();
+  }else{
+    document.getElementById("inCode").style.display = "block";
     document.getElementById("inFind").style.display = "none";
-    document.getElementById("knownName").textContent = me.name;
+    const cv = document.getElementById("inCodeVal");
+    const go = async ()=>{
+      const v = cv.value.trim().toUpperCase();
+      const m = document.getElementById("inCodeMsg");
+      if(v.length < 4) return show(m, "Кодты толық жазыңыз.", false);
+      show(m, "Тексерілуде…", true);
+      try{
+        const d = await api({ action:"search", s:v, q:"тексеру" });
+        if(d.ok){ S = v; openStep(); }
+        else show(m, "Код дұрыс емес немесе мерзімі өткен. Экранда тұрған кодты қараңыз.", false);
+      }catch(err){ show(m, "Байланыс жоқ. Қайта көріңіз.", false); }
+    };
+    document.getElementById("inCodeGo").addEventListener("click", go);
+    cv.addEventListener("keydown", e=>{ if(e.key==="Enter") go(); });
   }
 
   document.getElementById("knownNot").addEventListener("click", ()=>{
@@ -1781,6 +1830,11 @@ if(VIEW === "screen"){
         return;
       }
       document.getElementById("scrCount").textContent = d.count;
+      if(d.code){
+        document.getElementById("scrOnline").style.display = "flex";
+        document.getElementById("scrSite").textContent = location.host + "/?v=in";
+        document.getElementById("scrCode").textContent = d.code;
+      }
       if(d.ts && d.ts !== lastTs){
         if(!first){
           document.getElementById("helloName").textContent = d.name;
@@ -1894,7 +1948,9 @@ if(VIEW === "admin"){
     $$$("sessBox").innerHTML = SESS
       ? '<div class="st" style="background:#E9F7F0"><b style="color:#166B48">Ашық · '+SESS.day+'-күн</b>'+
         '<span>Белгіленгені: '+SESS.count+' · '+
-        new Date(SESS.until).toLocaleTimeString("kk-KZ",{hour:"2-digit",minute:"2-digit"})+'-ге дейін</span></div>'
+        new Date(SESS.until).toLocaleTimeString("kk-KZ",{hour:"2-digit",minute:"2-digit"})+'-ге дейін</span></div>'+
+        '<div class="st" style="margin-top:9px"><b style="letter-spacing:.14em">'+(SESS.code||"—")+'</b>'+
+        '<span>онлайн қатысушыларға арналған код · эфирде айтылады</span></div>'
       : '<div class="st"><b>Жабық</b><span>QR жұмыс істемейді</span></div>';
   }
   setInterval(()=>{ if(TOKEN && $$$("adPanel").style.display !== "none") refresh(); }, 15000);
@@ -1953,10 +2009,12 @@ if(VIEW === "admin"){
     if(!sheetTpl) sheetTpl = document.getElementById("certtpl").content.firstElementChild;
     return sheetTpl;
   }
-  async function makePdf(name, id, download){
+  async function makePdf(name, id, download, fmt){
     const sheet = certSheet().cloneNode(true);
     sheet.querySelector("#name").textContent = name;
     sheet.querySelector("#cid").textContent = id;
+    const fw = sheet.querySelector("#fmtword");
+    if(fw) fw.textContent = (fmt === "Онлайн") ? "онлайн форматта " : "";
     sheet.querySelector("#qr").src = qrDataUrl(SITE + "?v=check&id=" + encodeURIComponent(id), 8);
 
     const stage = $$$("cs");
@@ -2006,8 +2064,8 @@ if(VIEW === "admin"){
     $$$("crtTest").disabled = true;
     $$$("crtProg").textContent = "PDF жасалуда…";
     try{
-      const p = PEOPLE[0] || { name:"Сынақ Қатысушы", id:CONFIG.certPrefix + "-0000-TEST" };
-      await makePdf(p.name, p.id, true);
+      const p = PEOPLE[0] || { name:"Сынақ Қатысушы", id:CONFIG.certPrefix + "-0000-TEST", fmt:"Залда" };
+      await makePdf(p.name, p.id, true, p.fmt);
       $$$("crtProg").textContent = "Сынақ PDF жүктелді. Ашып тексеріңіз.";
     }catch(err){ $$$("crtProg").textContent = "Қате: " + err.message; }
     $$$("crtTest").disabled = false;
@@ -2034,7 +2092,7 @@ if(VIEW === "admin"){
       const p = list[i];
       $$$("crtProg").textContent = (i+1) + " / " + list.length + " · " + p.name;
       try{
-        const blob = await makePdf(p.name, p.id, false);
+        const blob = await makePdf(p.name, p.id, false, p.fmt);
         const b64 = await toB64(blob);
         const r = await api({ action:"mail", token:TOKEN, id:p.id, pdf:b64 });
         if(r.ok){ done++; logLine("✓ " + p.name); }
