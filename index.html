@@ -454,6 +454,11 @@ padding:4px 9px;border-radius:999px;flex:none}
 #cs .mlist li{position:relative;padding-left:5.5mm;font-size:9.5pt;line-height:1.5;color:#2A2C38;margin-bottom:1.6mm}
 #cs .mlist li::before{content:"";position:absolute;left:0;top:1.7mm;width:2.6mm;height:2.6mm;border-radius:.7mm;background:var(--lime)}
 
+#cs .lead{font-size:10pt;color:#3A3D4A;line-height:1.5}
+#cs .ttl{font-size:12.5pt;font-weight:700;color:var(--ink);white-space:nowrap;
+  letter-spacing:-.004em;margin:1mm 0 3.5mm;line-height:1.35}
+#cs .cols{align-items:flex-start}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
@@ -1107,14 +1112,16 @@ padding:4px 9px;border-radius:999px;flex:none}
     </div>
 
     <div class="cmid">
+      <div class="word">Сертификат</div>
+      <div class="name" id="name">Нұрлыхан Жұмахан</div>
+      <div class="rule"></div>
+
+      <div class="lead">Қазақстан Республикасының Ұлттық кітапханасы ұйымдастырған</div>
+      <div class="ttl" id="ttl">«Жасанды интеллект дәуіріндегі кітапхана: цифрлық трансформация және жаңа мүмкіндіктер»</div>
+
       <div class="cols">
         <div class="col-l">
-          <div class="word">Сертификат</div>
-          <div class="name" id="name">Нұрлыхан Жұмахан</div>
-          <div class="rule"></div>
           <p class="text">
-            Қазақстан Республикасының Ұлттық кітапханасы ұйымдастырған
-            <b>«Жасанды интеллект дәуіріндегі кітапхана: цифрлық трансформация және жаңа мүмкіндіктер»</b>
             атты екі күндік семинар-тренингке <span id="fmtword"></span>қатысып, кітапхана саласындағы
             жасанды интеллект (AI) мен цифрлық инновацияларды дамыту бағытындағы кәсіби біліктілігін
             арттырғаны үшін беріледі.
@@ -2136,6 +2143,18 @@ if(VIEW === "admin"){
     const stage = $$$("cs");
     stage.innerHTML = "";
     stage.appendChild(sheet);
+
+    // тақырып бір жолға сыймаса, қаріпті сәл кішірейтеміз
+    const ttl = sheet.querySelector("#ttl");
+    if(ttl){
+      let fs = 12.5;
+      ttl.style.fontSize = fs + "pt";
+      let guard = 0;
+      while(ttl.scrollWidth > ttl.clientWidth + 1 && fs > 8 && guard++ < 60){
+        fs -= 0.25;
+        ttl.style.fontSize = fs + "pt";
+      }
+    }
 
     // қаріптер мен суреттер толық жүктелгенше күтеміз
     if(document.fonts && document.fonts.ready) await document.fonts.ready;
