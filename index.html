@@ -343,7 +343,70 @@ padding:4px 9px;border-radius:999px;flex:none}
   background:#fff;border-radius:999px;padding:8px 10px;display:flex;gap:8px;align-items:center;
   box-shadow:0 6px 24px rgba(20,20,45,.16);font-size:13px;
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== үлкен экрандағы орналасу ===== */
+@media(min-width:1000px){
+  .topbar-in{max-width:1120px}
+  #v-reg .shell{max-width:1120px;display:grid;grid-template-columns:minmax(0,1fr) 430px;
+    gap:20px;align-items:start;padding-bottom:70px}
+  #v-reg .hero{grid-column:1/-1;padding:34px 34px 30px}
+  #v-reg .hero h1{font-size:38px;max-width:17ch}
+  #v-reg .hero .count{max-width:520px}
+  .colL,.colR{min-width:0}
+  .colL>.card:first-child{margin-top:0}
+  .colR{position:sticky;top:74px}
+  .colR>.card:first-child{margin-top:0}
+  footer{max-width:1120px}
+}
+@media(min-width:1360px){
+  .topbar-in,#v-reg .shell,footer{max-width:1240px}
+  #v-reg .shell{grid-template-columns:minmax(0,1fr) 460px}
+}
+
+/* ===== автордың қолтаңбасы ===== */
+.crafted{margin-top:18px;font-size:10.5px;letter-spacing:.16em;color:var(--muted);opacity:.6}
+.scr-crafted{position:fixed;bottom:16px;left:0;right:0;text-align:center;
+  font-size:11px;letter-spacing:.18em;color:rgba(255,255,255,.28);z-index:2}
+
+/* ===== үлкен экранның тірі фоны ===== */
+#v-screen{background:radial-gradient(120% 90% at 50% 0%,#1B1740 0%,#12112A 45%,#0B0A18 100%)}
+.bgfx{position:absolute;inset:0;overflow:hidden;z-index:0;pointer-events:none}
+.scr{position:relative;z-index:1}
+
+/* цифрлық жаңбыр */
+.rain span{position:absolute;top:-20%;writing-mode:vertical-rl;font-size:13px;line-height:1.35;
+  letter-spacing:.28em;color:#6C5CF5;opacity:.16;white-space:nowrap;
+  animation:fall linear infinite}
+@keyframes fall{from{transform:translateY(-40%)}to{transform:translateY(115vh)}}
+
+/* ұшып бара жатқан кітаптар */
+.fly{position:absolute;display:flex;align-items:center;gap:10px;animation:drift linear infinite;opacity:0}
+.fly i{width:26px;height:20px;border-radius:3px 5px 5px 3px;background:linear-gradient(135deg,#7A6BFF,#4B3BE8);
+  box-shadow:inset -6px 0 0 rgba(255,255,255,.22), 0 6px 18px rgba(90,70,255,.45);display:block;flex:none}
+.fly b{font-size:12px;letter-spacing:.22em;color:#DFF56B;opacity:.7;font-weight:600}
+@keyframes drift{
+  0%{transform:translate(-8vw,10vh) rotate(-8deg);opacity:0}
+  12%{opacity:.85}
+  88%{opacity:.85}
+  100%{transform:translate(108vw,-16vh) rotate(10deg);opacity:0}
+}
+
+/* сүйкімді робот */
+.robot{position:absolute;left:3.5vw;bottom:3vh;width:clamp(120px,13vw,210px);animation:hover 3.6s ease-in-out infinite}
+@keyframes hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.robot .arm{transform-origin:128px 118px;animation:wave 1.9s ease-in-out infinite}
+@keyframes wave{0%,100%{transform:rotate(6deg)}50%{transform:rotate(-26deg)}}
+.robot .eye{animation:blink 4.4s infinite}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.12)}}
+.bubble{position:absolute;left:calc(3.5vw + clamp(96px,10.5vw,168px));bottom:calc(3vh + clamp(76px,8.4vw,136px));
+  background:var(--lime);color:#28320A;font-weight:800;font-size:clamp(14px,1.5vw,21px);
+  padding:.5em 1em;border-radius:999px;animation:pop 3.6s ease-in-out infinite}
+.bubble::after{content:"";position:absolute;left:14px;bottom:-7px;width:14px;height:14px;
+  background:var(--lime);transform:rotate(45deg);border-radius:2px}
+@keyframes pop{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.05)}}
+@media(max-width:700px){.robot,.bubble{display:none}}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -377,6 +440,8 @@ padding:4px 9px;border-radius:999px;flex:none}
     <div class="live" id="liveBadge"><span class="blink"></span><span data-i="live"></span></div>
     <p class="count-note" data-i="countNote"></p>
   </header>
+
+  <div class="colL">
 
   <!-- ABOUT -->
   <section class="card">
@@ -432,6 +497,10 @@ padding:4px 9px;border-radius:999px;flex:none}
       <li><span class="tick"><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#DFF56B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.4 4.7 9 10 3.2"/></svg></span><span data-i="certL3"></span></li>
     </ul>
   </section>
+
+  </div>
+
+  <div class="colR">
 
   <!-- FORM -->
   <section class="card" id="formPane">
@@ -588,12 +657,14 @@ padding:4px 9px;border-radius:999px;flex:none}
     <button type="button" class="btn-ghost" id="againBtn" data-i="again"></button>
   </section>
 
+  </div>
 </div>
 
 <footer>
   <p data-i="fOrg"></p>
   <p data-i="fPriv"></p>
   <p style="margin-top:14px"><a href="?v=admin" style="color:var(--muted);text-decoration:none;font-size:11.5px;opacity:.75">Ұйымдастырушыға</a></p>
+  <p class="crafted">CRAFTED BY NURLYKHAN ZHUMAKHAN</p>
 </footer>
 </div>
 
@@ -641,6 +712,44 @@ padding:4px 9px;border-radius:999px;flex:none}
 
 <!-- ══════════ ҮЛКЕН ЭКРАН ══════════ -->
 <div class="view" id="v-screen">
+  <div class="bgfx" aria-hidden="true">
+    <div class="rain">
+      <span style="left:4%;  animation-duration:17s; animation-delay:0s">10110100110101101001</span>
+      <span style="left:12%; animation-duration:23s; animation-delay:-6s">01001101011010010110</span>
+      <span style="left:21%; animation-duration:19s; animation-delay:-11s">11010010110100101101</span>
+      <span style="left:31%; animation-duration:26s; animation-delay:-3s">00101101001011010011</span>
+      <span style="left:42%; animation-duration:21s; animation-delay:-15s">10011010110100110101</span>
+      <span style="left:57%; animation-duration:24s; animation-delay:-8s">01101001101011001010</span>
+      <span style="left:68%; animation-duration:18s; animation-delay:-19s">11001011010011010110</span>
+      <span style="left:78%; animation-duration:27s; animation-delay:-2s">10100110101101001011</span>
+      <span style="left:88%; animation-duration:20s; animation-delay:-13s">01011010011010110010</span>
+      <span style="left:95%; animation-duration:25s; animation-delay:-9s">11010110010110100110</span>
+    </div>
+
+    <div class="fly" style="top:14%; animation-duration:22s; animation-delay:-2s"><i></i><b>01001</b></div>
+    <div class="fly" style="top:32%; animation-duration:29s; animation-delay:-11s"><i></i><b>110101</b></div>
+    <div class="fly" style="top:52%; animation-duration:25s; animation-delay:-18s"><i></i><b>1001</b></div>
+    <div class="fly" style="top:68%; animation-duration:33s; animation-delay:-6s"><i></i><b>010110</b></div>
+    <div class="fly" style="top:82%; animation-duration:27s; animation-delay:-23s"><i></i><b>1101</b></div>
+
+    <svg class="robot" viewBox="0 0 200 190" fill="none">
+      <ellipse cx="100" cy="182" rx="42" ry="6" fill="#000" opacity=".35"/>
+      <path d="M100 26V14" stroke="#8C81FF" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="100" cy="10" r="6" fill="#DFF56B"/>
+      <rect x="52" y="26" width="96" height="74" rx="26" fill="#EDECFF"/>
+      <rect x="64" y="44" width="72" height="38" rx="17" fill="#1B1740"/>
+      <g class="eye"><circle cx="86" cy="63" r="7" fill="#DFF56B"/><circle cx="114" cy="63" r="7" fill="#DFF56B"/></g>
+      <path d="M92 76c5 4 11 4 16 0" stroke="#6C5CF5" stroke-width="3" stroke-linecap="round"/>
+      <rect x="62" y="106" width="76" height="60" rx="20" fill="#C9C4FB"/>
+      <rect x="78" y="122" width="44" height="28" rx="9" fill="#4B3BE8"/>
+      <path d="M86 136h28M86 129h20" stroke="#DFF56B" stroke-width="3" stroke-linecap="round"/>
+      <rect x="40" y="112" width="20" height="46" rx="10" fill="#EDECFF"/>
+      <g class="arm"><rect x="140" y="98" width="19" height="44" rx="9.5" fill="#EDECFF"/>
+      <circle cx="149" cy="94" r="12" fill="#EDECFF"/></g>
+    </svg>
+    <div class="bubble">Сәлем!</div>
+  </div>
+
   <div class="scr">
     <h2>Қатысуыңызды белгілеңіз</h2>
     <p class="lead">Телефонмен сканерлеп, тіркеу нөміріңізді немесе поштаңызды жазыңыз</p>
@@ -654,6 +763,7 @@ padding:4px 9px;border-radius:999px;flex:none}
     <div class="gr">Бүгінгі күніңіз сәтті өтсін!</div>
     <div class="joke" id="helloJoke"></div>
   </div>
+  <div class="scr-crafted">CRAFTED BY NURLYKHAN ZHUMAKHAN</div>
   <div class="scr-warn" id="scrWarn" style="display:none"></div>
 </div>
 
