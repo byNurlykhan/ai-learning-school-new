@@ -241,12 +241,12 @@ footer p{margin:0 0 5px;line-height:1.5}
 
 /* ===== үлкен экран ===== */
 #v-screen{background:#0E0E14;color:#fff;min-height:100vh}
-.scr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3vh 4vw;text-align:center}
-.scr h2{font-size:clamp(22px,3.4vw,44px);font-weight:700;letter-spacing:-.02em;margin:0 0 2vh;line-height:1.15}
-.scr .lead{font-size:clamp(14px,1.5vw,21px);color:#9C9EB0;margin:0 0 4vh;max-width:22ch;line-height:1.4}
+.scr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2vh 4vw 6vh;text-align:center}
+.scr h2{font-size:clamp(20px,3vw,40px);font-weight:700;letter-spacing:-.02em;margin:0 0 1.6vh;line-height:1.15}
+.scr .lead{font-size:clamp(13px,1.4vw,19px);color:#9C9EB0;margin:0 0 3vh;max-width:24ch;line-height:1.4}
 .qrbig{background:#fff;padding:2.2vh;border-radius:24px;line-height:0}
-.qrbig img{width:min(46vh,380px);height:auto;display:block;image-rendering:pixelated}
-.scr .cnt{margin-top:4vh;font-size:clamp(13px,1.4vw,18px);color:#7C7E90}
+.qrbig img{width:min(42vh,340px);height:auto;display:block;image-rendering:pixelated}
+.scr .cnt{margin-top:2.6vh;font-size:clamp(13px,1.4vw,18px);color:#7C7E90}
 .scr .cnt b{color:var(--lime);font-size:1.5em;font-weight:700}
 .hello{position:fixed;inset:0;background:#3B30E0;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5vw;z-index:5}
 .hello.on{display:flex}
@@ -365,11 +365,6 @@ padding:4px 9px;border-radius:999px;flex:none}
 
 /* ===== автордың қолтаңбасы ===== */
 .crafted{margin-top:18px;font-size:10.5px;letter-spacing:.16em;color:var(--muted);opacity:.6}
-.onl{margin-top:3.2vh;display:flex;flex-direction:column;align-items:center;gap:.7vh;
-  border:1.5px solid rgba(255,255,255,.16);border-radius:20px;padding:1.6vh 2.4vw;background:rgba(255,255,255,.04)}
-.onl span{font-size:clamp(11px,1.1vw,15px);color:#8E90A6;letter-spacing:.04em}
-.onl b{font-size:clamp(13px,1.5vw,21px);color:#fff;font-weight:600}
-.onl em{font-style:normal;font-size:clamp(24px,3.4vw,48px);font-weight:800;color:var(--lime);letter-spacing:.16em;line-height:1.1}
 .scr-crafted{position:fixed;bottom:16px;left:0;right:0;text-align:center;
   font-size:11px;letter-spacing:.18em;color:rgba(255,255,255,.28);z-index:2}
 
@@ -930,11 +925,6 @@ padding:4px 9px;border-radius:999px;flex:none}
     <p class="lead">Телефонмен сканерлеп, тіркеу нөміріңізді немесе поштаңызды жазыңыз</p>
     <div class="qrbig"><img id="scrQr" alt="QR"></div>
     <p class="cnt">Бүгін белгіленгені: <b id="scrCount">0</b></p>
-    <div class="onl" id="scrOnline" style="display:none">
-      <span>Онлайн қараушыларға</span>
-      <b>Поштаңыздағы «Қатысуымды белгілеу» түймесін басыңыз</b>
-      <em id="scrCode" style="font-size:clamp(13px,1.4vw,19px);letter-spacing:.04em;color:#8E90A6;font-weight:500"></em>
-    </div>
   </div>
   <div class="hello" id="hello">
     <div class="badge" id="helloDay"></div>
@@ -2003,9 +1993,6 @@ if(VIEW === "screen"){
         return;
       }
       document.getElementById("scrCount").textContent = d.count;
-      document.getElementById("scrOnline").style.display = "flex";
-      document.getElementById("scrCode").textContent =
-        d.code ? ("Хатын таппағандарға: " + location.host + "/?v=online · код " + d.code) : "";
       if(d.ts && d.ts !== lastTs){
         if(!first){
           document.getElementById("helloName").textContent = d.name;
