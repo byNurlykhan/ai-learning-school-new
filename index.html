@@ -1003,6 +1003,11 @@ padding:4px 9px;border-radius:999px;flex:none}
     <!-- Қатысушылар -->
     <div class="pane" id="pane-ppl">
       <div class="card">
+        <div class="tabs" id="pplTabs" style="margin-bottom:14px">
+          <button type="button" data-f="" aria-pressed="true">Барлығы</button>
+          <button type="button" data-f="Залда" aria-pressed="false">Залда</button>
+          <button type="button" data-f="Онлайн" aria-pressed="false">Онлайн</button>
+        </div>
         <div class="field"><input id="pplQ" placeholder="Іздеу: аты, ұйым, пошта" autocomplete="off"></div>
         <p class="sub" id="pplCount" style="margin-bottom:10px"></p>
         <div class="scroll">
@@ -1020,7 +1025,12 @@ padding:4px 9px;border-radius:999px;flex:none}
         <h2 style="font-size:17px;margin:0 0 6px">Сертификат жіберу</h2>
         <p class="sub">Жеке Gmail аккаунтында тәулігіне 100 хат лимиті бар. Бір күнде 90-нан жіберіп,
         қалғанын ертең жалғастыруға болады. Жіберілгендер қайталанбайды.</p>
-        <div class="field" style="margin-top:16px">
+        <div class="tabs" id="crtTabs" style="margin-top:18px">
+          <button type="button" data-f="" aria-pressed="true">Барлығы</button>
+          <button type="button" data-f="Залда" aria-pressed="false">Залда</button>
+          <button type="button" data-f="Онлайн" aria-pressed="false">Онлайн</button>
+        </div>
+        <div class="field" style="margin-top:14px">
           <label for="crtN">Бүгін неше адамға жіберу</label>
           <input id="crtN" type="number" value="90" min="1" max="200">
         </div>
@@ -2035,9 +2045,9 @@ if(VIEW === "admin"){
     loadPeople();
   }
 
-  document.querySelectorAll(".tabs button").forEach(b=>{
+  document.querySelectorAll(".tabs button[data-tab]").forEach(b=>{
     b.addEventListener("click", ()=>{
-      document.querySelectorAll(".tabs button").forEach(x=>
+      document.querySelectorAll(".tabs button[data-tab]").forEach(x=>
         x.setAttribute("aria-pressed", String(x === b)));
       document.querySelectorAll(".pane").forEach(p=> p.classList.remove("on"));
       $$$("pane-" + b.dataset.tab).classList.add("on");
@@ -2051,9 +2061,9 @@ if(VIEW === "admin"){
     if(!d.ok){ location.reload(); return; }
     const t = d.stats;
     $$$("adStats").innerHTML = [
-      [t.total,"тіркелген"],[t.d1,"1-күн болды"],[t.d2,"2-күн болды"],[t.online,"онлайн"],
-      [t.eligible,"сертификат алады"],[t.sent,"жіберілді"],[t.eligible-t.sent,"кезекте"],
-      [t.quota,"бүгінгі хат лимиті"]
+      [t.total,"тіркелген"],[t.offline,"залда"],[t.online,"онлайн"],[t.quota,"бүгінгі хат лимиті"],
+      [t.d1,"1-күн белгіленді"],[t.d2,"2-күн белгіленді"],
+      [t.eligible,"сертификат алады"],[t.sent,"жіберілді"]
     ].map(([v,l])=> '<div class="st"><b>'+v+'</b><span>'+l+'</span></div>').join("");
 
     SESS = d.session;
@@ -2100,11 +2110,16 @@ if(VIEW === "admin"){
     const d = await api({ action:"people", token:TOKEN });
     if(d.ok){ PEOPLE = d.list; drawPeople(); }
   }
+  let PPL_F = "";
   function drawPeople(){
     const q = $$$("pplQ").value.trim().toLowerCase();
-    const rows = PEOPLE.filter(p => !q ||
-      (p.name+" "+p.org+" "+p.mail+" "+p.id).toLowerCase().includes(q));
-    $$$("pplCount").textContent = rows.length + " адам";
+    const rows = PEOPLE
+      .filter(p => !PPL_F || p.fmt === PPL_F)
+      .filter(p => !q || (p.name+" "+p.org+" "+p.mail+" "+p.id).toLowerCase().includes(q));
+
+    const marked = rows.filter(p => p.d1 || p.d2).length;
+    $$$("pplCount").textContent = rows.length + " адам"
+      + (PPL_F === "Онлайн" ? "" : " · белгіленгені: " + marked);
     $$$("pplBody").innerHTML = rows.map(p =>
       '<tr><td><b>'+esc2(p.name)+'</b><br><span style="color:var(--muted);font-size:12px">'+
         esc2(p.mail)+' · '+esc2(p.days)+' · '+esc2(p.fmt)+'</span></td>'+
@@ -2114,6 +2129,25 @@ if(VIEW === "admin"){
       '<td><span class="dot'+(p.cert?" y":"")+'"></span></td></tr>').join("");
   }
   $$$("pplQ").addEventListener("input", drawPeople);
+
+  document.querySelectorAll("#pplTabs button").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      PPL_F = b.dataset.f;
+      document.querySelectorAll("#pplTabs button").forEach(x=>
+        x.setAttribute("aria-pressed", String(x === b)));
+      drawPeople();
+    });
+  });
+
+  let CRT_F = "";
+  document.querySelectorAll("#crtTabs button").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      CRT_F = b.dataset.f;
+      document.querySelectorAll("#crtTabs button").forEach(x=>
+        x.setAttribute("aria-pressed", String(x === b)));
+      $$$("crtProg").textContent = CRT_F ? (CRT_F + " форматындағыларға жіберіледі.") : "Барлық кезекке жіберіледі.";
+    });
+  });
 
   /* --- сертификат --- */
   let sheetTpl = null;
@@ -2208,16 +2242,16 @@ if(VIEW === "admin"){
 
   $$$("crtRun").addEventListener("click", async ()=>{
     const limit = Math.max(1, Number($$$("crtN").value) || 90);
-    const d = await api({ action:"pending", token:TOKEN, limit });
+    const d = await api({ action:"pending", token:TOKEN, limit, fmt:CRT_F });
     if(!d.ok) return alert("Тізім алынбады.");
     const list = d.list || [];
-    if(!list.length) return alert("Кезек бос. Сертификат күтіп тұрған адам жоқ.");
+    if(!list.length) return alert(CRT_F ? ("«"+CRT_F+"» форматында кезек бос.") : "Кезек бос. Сертификат күтіп тұрған адам жоқ.");
 
     $$$("crtWarn").innerHTML = (d.quota < list.length)
       ? '<div class="warnbox">Бүгінгі лимит ('+d.quota+') кезектегі саннан аз. '+
         'Лимит біткенде тоқтайды, қалғанын ертең жалғастырасыз.</div>' : "";
 
-    if(!confirm(list.length + " адамға сертификат жіберіледі. Бастаймыз ба?")) return;
+    if(!confirm(list.length + " адамға" + (CRT_F ? (" («"+CRT_F+"»)") : "") + " сертификат жіберіледі. Бастаймыз ба?")) return;
 
     $$$("crtRun").disabled = true; $$$("crtTest").disabled = true;
     $$$("crtLog").style.display = "block";
