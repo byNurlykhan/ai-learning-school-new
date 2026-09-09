@@ -567,6 +567,14 @@ padding:4px 9px;border-radius:999px;flex:none}
 
   <div class="colL">
 
+  <!-- LIVE -->
+  <section class="card" id="liveCard" style="display:none;background:#111119;color:#fff">
+    <span class="pill" style="background:#E0655C;color:#fff"><span class="dot" style="background:#fff"></span> ТІКЕЛЕЙ ЭФИР</span>
+    <h2 style="margin:14px 0 8px;color:#fff">Семинар YouTube арқылы көрсетіледі</h2>
+    <p class="sub" style="color:#A7A9BC;margin-bottom:18px">Эфир 1 және 2 қазан күндері сағат 09:30-да басталады. Сілтеме екі күнге де бірдей.</p>
+    <a class="btn" id="liveBtn" style="display:block;text-align:center;text-decoration:none;background:#E0655C;box-shadow:none" target="_blank" rel="noopener">Эфирді ашу</a>
+  </section>
+
   <!-- ABOUT -->
   <section class="card">
     <h2 data-i="aboutH"></h2>
@@ -966,6 +974,7 @@ padding:4px 9px;border-radius:999px;flex:none}
       <button type="button" data-tab="day" aria-pressed="true">Бүгінгі күн</button>
       <button type="button" data-tab="ppl" aria-pressed="false">Қатысушылар</button>
       <button type="button" data-tab="crt" aria-pressed="false">Сертификат</button>
+      <button type="button" data-tab="lnk" aria-pressed="false">Эфир сілтемесі</button>
     </div>
 
     <!-- Бүгінгі күн -->
@@ -1016,6 +1025,40 @@ padding:4px 9px;border-radius:999px;flex:none}
             <tbody id="pplBody"></tbody>
           </table>
         </div>
+      </div>
+    </div>
+
+
+    <!-- Эфир сілтемесін тарату -->
+    <div class="pane" id="pane-lnk">
+      <div class="card">
+        <h2 style="font-size:17px;margin:0 0 6px">Тікелей эфир сілтемесін жіберу</h2>
+        <p class="sub">Сілтемені бір рет қоясың, әр күні «Жіберуді бастау» дегенді басасың.
+        Кімге кеткені есте сақталады, ешкімге екі рет бармайды. Тәуліктік лимит бітсе,
+        ертесіне сол жерден жалғасады.</p>
+        <div id="lnkLeft"></div>
+
+        <div class="field" style="margin-top:16px">
+          <label for="lnkUrl">YouTube эфирінің сілтемесі</label>
+          <input id="lnkUrl" placeholder="https://youtube.com/live/..." autocomplete="off">
+        </div>
+
+        <div class="tabs" id="lnkTabs">
+          <button type="button" data-f="" aria-pressed="true">Барлығы</button>
+          <button type="button" data-f="Залда" aria-pressed="false">Залда</button>
+          <button type="button" data-f="Онлайн" aria-pressed="false">Онлайн</button>
+        </div>
+
+        <div class="field" style="margin-top:14px">
+          <label for="lnkN">Бүгін неше адамға жіберу</label>
+          <input id="lnkN" type="number" value="90" min="1" max="200">
+        </div>
+
+        <button class="btn" id="lnkRun">Жіберуді бастау</button>
+        <div class="bar"><i id="lnkBar"></i></div>
+        <p class="sub" id="lnkProg">Дайын.</p>
+        <div id="lnkWarn"></div>
+        <div class="log" id="lnkLog" style="display:none"></div>
       </div>
     </div>
 
@@ -1720,7 +1763,13 @@ function qrDataUrl(text, cell){
 }
 
 /* ---------- бетті таңдау ---------- */
+if(CONFIG.youtube){
+  const lc = document.getElementById("liveCard");
+  if(lc){ lc.style.display = "block"; document.getElementById("liveBtn").href = CONFIG.youtube; }
+}
+
 (function router(){
+  if(VIEW === "live" && CONFIG.youtube){ location.replace(CONFIG.youtube); }
   const map = { reg:"v-reg", in:"v-in", online:"v-in", me:"v-me", check:"v-check", screen:"v-screen", admin:"v-admin" };
   const id = map[VIEW] || "v-reg";
   document.querySelectorAll(".view").forEach(v => v.classList.remove("on"));
@@ -2063,8 +2112,16 @@ if(VIEW === "admin"){
     $$$("adStats").innerHTML = [
       [t.total,"тіркелген"],[t.offline,"залда"],[t.online,"онлайн"],[t.quota,"бүгінгі хат лимиті"],
       [t.d1,"1-күн белгіленді"],[t.d2,"2-күн белгіленді"],
-      [t.eligible,"сертификат алады"],[t.sent,"жіберілді"]
+      [t.eligible,"сертификат алады"],[t.sent,"сертификат кетті"],[t.noted||0,"эфир хаты кетті"]
     ].map(([v,l])=> '<div class="st"><b>'+v+'</b><span>'+l+'</span></div>').join("");
+
+    if(d.link && !$$$("lnkUrl").value) $$$("lnkUrl").value = d.link;
+    const left = t.total - (t.noted || 0);
+    $$$("lnkLeft").innerHTML = '<div class="sgrid" style="margin-top:14px">'
+      + '<div class="st"><b>' + (t.noted || 0) + '</b><span>сілтеме кетті</span></div>'
+      + '<div class="st"><b>' + left + '</b><span>кезекте қалды</span></div>'
+      + '<div class="st"><b>' + Math.ceil(left / 90) + '</b><span>шамамен күн керек</span></div>'
+      + '<div class="st"><b>' + t.quota + '</b><span>бүгін жіберуге болады</span></div></div>';
 
     SESS = d.session;
     $$$("sessBox").innerHTML = SESS
@@ -2148,6 +2205,59 @@ if(VIEW === "admin"){
       $$$("crtProg").textContent = CRT_F ? (CRT_F + " форматындағыларға жіберіледі.") : "Барлық кезекке жіберіледі.";
     });
   });
+
+
+  /* --- эфир сілтемесін тарату --- */
+  let LNK_F = "";
+  document.querySelectorAll("#lnkTabs button").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      LNK_F = b.dataset.f;
+      document.querySelectorAll("#lnkTabs button").forEach(x=>
+        x.setAttribute("aria-pressed", String(x === b)));
+    });
+  });
+
+  $$$("lnkRun").addEventListener("click", async ()=>{
+    const link = $$$("lnkUrl").value.trim();
+    if(!/^https?:\/\//.test(link)) return alert("Эфирдің толық сілтемесін жаз, https:// деп басталсын.");
+
+    const limit = Math.max(1, Number($$$("lnkN").value) || 90);
+    const d = await api({ action:"notelist", token:TOKEN, limit, fmt:LNK_F });
+    if(!d.ok) return alert("Тізім алынбады.");
+    const list = d.list || [];
+    if(!list.length) return alert("Кезек бос. Бәріне жіберіліп қойған.");
+
+    $$$("lnkWarn").innerHTML = (d.quota < list.length)
+      ? '<div class="warnbox">Бүгінгі лимит ('+d.quota+') кезектегі саннан аз. '
+        + 'Лимит біткенде тоқтайды, қалғанын ертең жалғастырасың.</div>' : "";
+
+    if(!confirm(list.length + " адамға эфир сілтемесі жіберіледі. Бастаймыз ба?")) return;
+
+    $$$("lnkRun").disabled = true;
+    $$$("lnkLog").style.display = "block";
+    let done = 0, fail = 0;
+
+    for(let i = 0; i < list.length; i++){
+      const p = list[i];
+      $$$("lnkProg").textContent = (i+1) + " / " + list.length + " · " + p.name;
+      try{
+        const r = await api({ action:"notesend", token:TOKEN, id:p.id, link });
+        if(r.ok){ done++; lnkLine("✓ " + p.name); }
+        else { fail++; lnkLine("✕ " + p.name + " · " + (r.error || "қате")); }
+      }catch(err){ fail++; lnkLine("✕ " + p.name + " · " + err.message); }
+      $$$("lnkBar").style.width = Math.round((i+1)/list.length*100) + "%";
+      await new Promise(r => setTimeout(r, 1100));
+    }
+
+    $$$("lnkProg").textContent = "Бітті. Жіберілгені: " + done + ". Қатесі: " + fail + ".";
+    $$$("lnkRun").disabled = false;
+    refresh();
+  });
+
+  function lnkLine(t){
+    const el = $$$("lnkLog"), d = document.createElement("div");
+    d.textContent = t; el.prepend(d);
+  }
 
   /* --- сертификат --- */
   let sheetTpl = null;
